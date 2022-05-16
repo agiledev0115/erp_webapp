@@ -1,90 +1,147 @@
 {%extends 'base/base.html'%}
 {%block main_content%}
-    <div class="row h-50 shadow_box m-2 gx-2">
+{%load static%}
+<!-- <div class="row h-50 shadow_box m-2 gx-2"> -->
+    <div class="row"> 
+
+        <form method="post" class="row h-50 shadow_box m-2 gx-2">
+            {%csrf_token%}
         <div class="col-lg-6  p-2">
-            <form method="post">
-                {%csrf_token%}
-            <div class="d-grid shadow_box gap-4 p-3">
-                <div class="display-5">Create Order</div>
-                <div class="row">
-                    <div class="col">
-                        <label for="ponumber" class="h4">PO number</label>
+                <div class="d-grid shadow_box gap-4 p-3">
+                    <div class="display-5">Create Order</div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="ponumber" class="h4">PO number</label>
+                        </div>
+                        <div class="col">
+                            <input type="number" name="ponumber" id="ponumber">
+                        </div>
                     </div>
-                    <div class="col">
-                        <input type="number" name="ponumber" id="ponumber">
+    
+                    <div class="row">
+                        <div class="col">
+                            <label for="date_ordered" class="h4">Date Ordered</label>
+                        </div>
+                        <div class="col">
+                            <input type="date" name="date_ordered" id="date_ordered">
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col">
+                            <label for="eta" class="h4">Expected Delivery Date</label>
+                        </div>
+                        <div class="col">
+                            <input type="date" name="eta" id="eta">
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <input type="submit" value="Create" class="btn btn-lg btn-primary">
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+    
+            <div class="col-lg-6  p-2">
+                <div class="d-grid shadow_box gap-4 p-3">
+                    <div class="display-5">Select Parts</div>
+    
+                    <div>
+                        <table class="table table-responsive" id="order_table">
+                            <thead>
+                                <th>#</th>
+                                <th>Part</th>
+                                <th>Quantity</th>
+                                <th></th>
+                                
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="t_id">1</td>
+                                    <td id="to_part">
+                                        <select name="part" id="part">
+                                            <option value="" disabled selected hidden></option>
+    
+                                            {%for obj in parts%}
+                                            <option value='{{obj.url}}'>{{obj.name}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </td>
+                                    <td id="to_quant">
+                                        <input type="number" name="quantity">
+                                    </td>
+                                    <td id="del" style="display: none;">
+                                        <img src="{%static 'purchasing/red_minus.png'%}" alt="" width="30px"  onclick="delRow()" style="cursor:pointer ;">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    
+                        <div class="btn btn-secondary" onclick="addRow()">Add more</button>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col">
-                        <label for="date_ordered" class="h4">Date Ordered</label>
-                    </div>
-                    <div class="col">
-                        <input type="date" name="date_ordered" id="date_ordered">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col">
-                        <label for="eta" class="h4">Expected Delivery Date</label>
-                    </div>
-                    <div class="col">
-                        <input type="date" name="eta" id="eta">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-2">
-                        <input type="submit" value="Create" class="btn btn-lg btn-primary">
-                    </div>
-                </div>
-
             </div>
         </div>
+    </form>
+    </div>
 
-        <div class="col-lg-6  p-2">
-            <div class="d-grid shadow_box gap-4 p-3">
-                <div class="display-5">Select Parts</div>
-
+    <div class="row shadow_box m-2 p-2">
+        <div class="col-lg-12">
+            <div class="d-grid gap-4">
+                <div class="display-5">All Orders</div>
                 <div>
                     <table class="table table-responsive">
                         <thead>
                             <th>#</th>
+                            <th>PO Number</th>
                             <th>Part</th>
                             <th>Quantity</th>
-                            
+                            <th>Date Ordered</th>
+                            <th>ETA</th>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td class="t_id"></td>
-                                <td id="to_part">
-                                    <select name="part" id="part">
-                                        <option value="" disabled selected hidden></option>
 
-                                        {%for obj in parts%}
-                                        <option value='{{obj.url}}'>{{obj.name}}</option>
-                                        {%endfor%}
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="number" name="quantity">
-                                </td>
-                            </tr>
-                        </tbody>
                     </table>
-                    <button class="btn btn-secondary" onclick="addRow()">Add more</button>
                 </div>
             </div>
         </div>
-        </form>
     </div>
 
-    <script type="text/javascript">
-    
-    function addRow() {
-        alert('pressed')
-    }
+<script type="text/javascript">
+
+let idSeries = 2;
+let table = document.getElementById("order_table");
+let id = document.getElementsByClassName("t_id");
+let selectPart = document.getElementById("to_part");
+let quantity = document.getElementById("to_quant");
+let del = document.getElementById("del");
 
 
-    </script>
+
+function addRow() {
+
+    let newRow = table.insertRow(-1);
+    let cell1 = newRow.insertCell(0);
+    let cell2 = newRow.insertCell(1);
+    let cell3 = newRow.insertCell(2);
+    let cell4 = newRow.insertCell(3);
+
+    cell1.innerHTML = String(idSeries);
+    cell2.innerHTML = selectPart.innerHTML;
+    cell3.innerHTML = quantity.innerHTML;
+    cell4.innerHTML = del.innerHTML;
+
+    idSeries +=1;
+
+}
+
+function delRow() {
+    event.srcElement.parentElement.parentElement.remove()
+    idSeries -= 1;
+}
+
+
+</script>
 {%endblock main_content%}
