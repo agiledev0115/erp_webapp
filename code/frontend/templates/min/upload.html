@@ -1,0 +1,29 @@
+<div class="row bg-white box_shadow p-3">
+    <div class="display-5 p-2 text-center"> Upload from a file </div>
+    
+    <form action="{%url 'frontend:minUpload'%}" method="post" id="file_form" class="d-grid gap-3 p-3" enctype="multipart/form-data">
+        {%csrf_token%}
+        <div class="row g-3 pt-3 align-items-center">
+            <div class="col-lg-4">
+              
+              <label for="file_upload" class="col-form-label fs-4"> 
+                Please select a CSV file
+                 </label>
+    
+            </div>
+            <div class="col-lg-6">
+              <input type="file" class="form-control" name="file" id="file">
+            </div>
+          </div>
+        
+    
+    </form>
+
+    <div class="row g-3 pt-3 align-items-center">
+        <div class="col-lg-4 d-grid g-3">
+            
+            <button class="btn btn-primary btn-lg" id="button" onclick="file_check()">Upload</button>
+
+        </div>
+    </div>
+</div>

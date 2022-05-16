@@ -1,0 +1,36 @@
+<table class="table table-dash">
+    <thead>
+        <th>Id</th>
+        <th>Part Name</th>
+        <th>Category</th>
+        <th>Current Stock</th>
+
+    </thead>
+    <tbody>
+        <form action="{%url 'frontend:currentUpdate'%}" method="POST" id="current_update">
+            {%csrf_token%}
+            {%for inst in dash%}
+            
+            <tr class="table_row">
+                <td class="t_id">{{inst.id}}</td>
+                <td class="t_part_name">{{inst.name}}</td>
+                <td class="t_part_type">{{inst.category | capfirst}}</td>
+                <td class="t_current_stock">{{inst.currentStock}}</td>
+                <td>
+                    <input id="new_input" class="t_cs_editable" style="display: none;" type="number" name="new_quantity" placeholder="{{inst.currentStock}}" >
+                    <!-- <input type="hidden" class="t_part" name="update_part" value="{{inst.name}}"> -->
+                </td>
+                 
+            </tr>
+            {%endfor%}
+            <!-- {%for inst in part%}
+            <input type="hidden" class="t_part" name="update_part" value="{{inst.url}}">
+            {%endfor%} -->
+
+        </form>
+
+    </tbody>
+    
+        
+
+</table>

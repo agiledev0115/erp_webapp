@@ -1,0 +1,75 @@
+part_url,part_name,currentStock
+http://127.0.0.1:8000/api/part/1/,4130 OD-10 T-3 x 1000,125
+http://127.0.0.1:8000/api/part/2/,4130 OD-15 T-2 x 1000,326
+http://127.0.0.1:8000/api/part/3/,4130 OD-15 T-3 x 1000,541
+http://127.0.0.1:8000/api/part/4/,4130 OD-25 T-2 x 1000,427
+http://127.0.0.1:8000/api/part/5/,4130 OD-25 T-3 x 1000,14
+http://127.0.0.1:8000/api/part/6/,4130 OD-45 T-2 x 1000,14
+http://127.0.0.1:8000/api/part/7/,Aluminium Sheet 2mm,2
+http://127.0.0.1:8000/api/part/8/,Aluminium Sheet 3mm,27
+http://127.0.0.1:8000/api/part/9/,Aluminium Sheet 4mm,4
+http://127.0.0.1:8000/api/part/10/,Bolt plate config 1,
+http://127.0.0.1:8000/api/part/11/,Bolt plate config 2,
+http://127.0.0.1:8000/api/part/12/,Bolt plate config 3,
+http://127.0.0.1:8000/api/part/13/,Bolt plate config 4,
+http://127.0.0.1:8000/api/part/14/,brass bushing 1,
+http://127.0.0.1:8000/api/part/15/,brass bushing 2,
+http://127.0.0.1:8000/api/part/16/,brass bushing 3,
+http://127.0.0.1:8000/api/part/17/,brass bushing 4,
+http://127.0.0.1:8000/api/part/18/,brass bushing 5,
+http://127.0.0.1:8000/api/part/19/,Cap Nut 1/2,
+http://127.0.0.1:8000/api/part/20/,Copper bushing 1,
+http://127.0.0.1:8000/api/part/21/,Copper bushing 2,
+http://127.0.0.1:8000/api/part/22/,Copper bushing 3,
+http://127.0.0.1:8000/api/part/23/,Copper bushing 4,
+http://127.0.0.1:8000/api/part/24/,Copper bushing 5,
+http://127.0.0.1:8000/api/part/25/,Flat washer 3/8,
+http://127.0.0.1:8000/api/part/26/,Hex head bolt 3/8 x 10,
+http://127.0.0.1:8000/api/part/27/,Hex head bolt 3/8 x 2,
+http://127.0.0.1:8000/api/part/28/,Hex head bolt 3/8 x 3,
+http://127.0.0.1:8000/api/part/29/,Hex head bolt 3/8 x 4,
+http://127.0.0.1:8000/api/part/30/,Hex head bolt 3/8 x 5,
+http://127.0.0.1:8000/api/part/31/,Hex head bolt 3/8 x 6,
+http://127.0.0.1:8000/api/part/32/,Hex head bolt 3/8 x 7,
+http://127.0.0.1:8000/api/part/33/,Hex head bolt 3/8 x 8,
+http://127.0.0.1:8000/api/part/34/,Hex head bolt 3/8 x 9,
+http://127.0.0.1:8000/api/part/35/,Hex Nut 3/8,
+http://127.0.0.1:8000/api/part/36/,Lock Nut 3/4,
+http://127.0.0.1:8000/api/part/37/,Mild Steel Plate 10mm,71
+http://127.0.0.1:8000/api/part/38/,Mild Steel Plate 5mm,1
+http://127.0.0.1:8000/api/part/39/,PET part 1,217
+http://127.0.0.1:8000/api/part/40/,PET part 2,47
+http://127.0.0.1:8000/api/part/41/,PET part 3,
+http://127.0.0.1:8000/api/part/42/,PET part 4,
+http://127.0.0.1:8000/api/part/43/,PET part 5,
+http://127.0.0.1:8000/api/part/44/,PET part 6,
+http://127.0.0.1:8000/api/part/45/,PET part 7,
+http://127.0.0.1:8000/api/part/46/,PET part 8,
+http://127.0.0.1:8000/api/part/47/,PET part 9,
+http://127.0.0.1:8000/api/part/48/,PVC part 1,
+http://127.0.0.1:8000/api/part/49/,PVC part 2,
+http://127.0.0.1:8000/api/part/50/,PVC part 3,
+http://127.0.0.1:8000/api/part/51/,PVC part 4,
+http://127.0.0.1:8000/api/part/52/,PVC part 5,
+http://127.0.0.1:8000/api/part/53/,PVC part 6,
+http://127.0.0.1:8000/api/part/54/,PVC part 7,
+http://127.0.0.1:8000/api/part/55/,PVC part 8,
+http://127.0.0.1:8000/api/part/56/,PVC part 9,
+http://127.0.0.1:8000/api/part/57/,Rubber washer 3/4,
+http://127.0.0.1:8000/api/part/58/,Socket head bolt 3/4 x 1,
+http://127.0.0.1:8000/api/part/59/,Socket head bolt 3/4 x 10,
+http://127.0.0.1:8000/api/part/60/,Socket head bolt 3/4 x 2,
+http://127.0.0.1:8000/api/part/61/,Socket head bolt 3/4 x 3,
+http://127.0.0.1:8000/api/part/62/,Socket head bolt 3/4 x 4,
+http://127.0.0.1:8000/api/part/63/,Socket head bolt 3/4 x 5,
+http://127.0.0.1:8000/api/part/64/,Socket head bolt 3/4 x 6,
+http://127.0.0.1:8000/api/part/65/,Socket head bolt 3/4 x 7,
+http://127.0.0.1:8000/api/part/66/,Socket head bolt 3/4 x 8,
+http://127.0.0.1:8000/api/part/67/,Socket head bolt 3/4 x 9,
+http://127.0.0.1:8000/api/part/68/,Stainless steel Sheet 2mm,421
+http://127.0.0.1:8000/api/part/69/,Stainless steel Sheet 3mm,7
+http://127.0.0.1:8000/api/part/70/,Truss config 1,
+http://127.0.0.1:8000/api/part/71/,Truss config 2,
+http://127.0.0.1:8000/api/part/72/,Truss config 3,
+http://127.0.0.1:8000/api/part/73/,Truss config 4,
+http://127.0.0.1:8000/api/part/74/,Truss config 5,

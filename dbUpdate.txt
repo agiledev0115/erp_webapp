@@ -1,0 +1,3 @@
+
+# pg_dump -Fc --no-acl --no-owner -h localhost -U postgres erpWebapp_db > localdb.dump
+# pg_restore --verbose --clean --no-acl --no-owner -h ec2-52-201-124-168.compute-1.amazonaws.com -U gkjnrxrhrifkig -d da2l6l0d6pp6j3 localdb.dump

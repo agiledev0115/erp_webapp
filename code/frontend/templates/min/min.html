@@ -1,0 +1,16 @@
+{%extends 'base/base.html'%}
+{%block main_content%}
+    <div class="row row_filter">
+        <div class="col-lg-6 col_filter d-grid gap-2">
+            {%include 'min/minFilters.html'%}
+        </div>
+    </div>
+    <div class="row row_content">
+        <div class="col-lg-6 col_content">
+            {%include 'min/minTable.html'%}
+        </div>
+        <div class="col-lg-5 col_upload">
+            {%include 'min/upload.html'%}
+        </div>
+    </div>
+{%endblock main_content%}

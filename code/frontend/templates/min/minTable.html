@@ -1,0 +1,30 @@
+<table class="table table-dash">
+    <thead>
+        <th>Id</th>
+        <th>Part Name</th>
+        <th>Category</th>
+        <th>Minimum Stock</th>
+
+    </thead>
+    <tbody>
+        <form method="POST" action="{%url 'frontend:minUpdate'%}" id="min_update">
+            {%csrf_token%}
+            {%for inst in dash%}
+            <tr class="table_row">
+                <td class="t_id">{{inst.id}}</td>
+                <td class="t_part_name">{{inst.name}}</td>
+                <td class="t_part_type">{{inst.category | capfirst}}</td>
+                <td class="t_min_stock">{{inst.minimumStock}}</td>
+                <td>
+                    <input id="new_input" class="t_ms_editable" style="display: none;" type="number" name="new_quantity" placeholder="{{inst.minimumStock}}" >
+                </td>
+            </tr>
+            {%endfor%}
+
+        </form>
+
+    </tbody>
+    
+        
+
+</table>

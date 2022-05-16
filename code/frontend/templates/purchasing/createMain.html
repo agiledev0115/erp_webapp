@@ -1,0 +1,80 @@
+{%extends 'base/base.html'%}
+{%block main_content%}
+    <div class="row h-50 shadow_box m-2 gx-2">
+        <div class="col-lg-6  p-2">
+            <form method="post">
+                {%csrf_token%}
+            <div class="d-grid shadow_box gap-4 p-3">
+                <div class="display-5">Create Order</div>
+                <div class="row">
+                    <div class="col">
+                        <label for="ponumber" class="h4">PO number</label>
+                    </div>
+                    <div class="col">
+                        <input type="number" name="ponumber" id="ponumber">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label for="date_ordered" class="h4">Date Ordered</label>
+                    </div>
+                    <div class="col">
+                        <input type="date" name="date_ordered" id="date_ordered">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label for="eta" class="h4">Expected Delivery Date</label>
+                    </div>
+                    <div class="col">
+                        <input type="date" name="eta" id="eta">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <input type="submit" value="Create" class="btn btn-lg btn-primary">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-6  p-2">
+            <div class="d-grid shadow_box gap-4 p-3">
+                <div class="display-5">Select Parts</div>
+
+                <div>
+                    <table class="table table-responsive">
+                        <thead>
+                            <th>#</th>
+                            <th>Part</th>
+                            <th>Quantity</th>
+                            
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="t_id"></td>
+                                <td id="to_part">
+                                    <select name="part" id="part">
+                                        <option value="" disabled selected hidden></option>
+
+                                        {%for obj in parts%}
+                                        <option value='{{obj.url}}'>{{obj.name}}</option>
+                                        {%endfor%}
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" name="quantity">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+{%endblock main_content%}

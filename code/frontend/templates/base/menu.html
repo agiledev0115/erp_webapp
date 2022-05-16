@@ -1,0 +1,168 @@
+<div class="accordion w-100" id="menu_accordion"  >
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="accordion_home">
+          <a href="{%url 'frontend:home'%}" style="text-decoration: none;">
+            <div class="d-grid gap-2" data-bs-toggle="collapse">
+                <button class="btn btn-success" type="button"><strong>Home</strong></button>
+            </div>
+          </a>
+        </h2>
+    </div>
+    
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" data-target="">
+            
+                <strong> Inventory</strong>
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#menu_accordion">
+            <div class="accordion-body-fluid p-2">
+                <div class="d-grid gap-2">
+                    
+                    <div><a href="{%url 'frontend:currentHome'%}"><button class="btn btn-outline-primary w-100">Current Stock</button></a></div>
+                    <div><a href="{%url 'frontend:minHome'%}"><button class="btn btn-outline-primary w-100">Minimum Stock</button></a></div>
+                    <!-- <div><a href="{%url 'frontend:purchasingHome'%}"><button class="btn btn-outline-primary w-100">Purchasing</button></a></div> -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingPur">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePur" aria-expanded="false" aria-controls="collapsePur" data-target="">
+          
+              <strong>Purchasing</strong>
+          </button>
+      </h2>
+      <div id="collapsePur" class="accordion-collapse collapse" aria-labelledby="headingPur" data-bs-parent="#menu_accordion">
+          <div class="accordion-body-fluid p-2">
+              <div class="d-grid gap-2">
+                  
+                  
+                  <div><a href="{%url 'frontend:purchasingHome'%}"><button class="btn btn-outline-primary w-100">Orders</button></a></div>
+                  <div><a href="{%url 'frontend:purchasingCreate'%}"><button class="btn btn-outline-primary w-100">Create order</button></a></div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          <strong>Production</strong>
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#menu_accordion">
+        <div class="accordion-body-fluid p-2">
+            <div class="d-grid gap-2">
+                
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">Projects</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">Shipment</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">Allocations</button></a></div>
+                
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="accordion-item">
+      <h2 class="accordion-header" id="headingThree">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            <strong>Planning</strong>
+        </button>
+      </h2>
+      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#menu_accordion">
+        <div class="accordion-body-fluid p-2">
+            <div class="d-grid gap-2">
+                
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">Utilization</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">Expected</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">Forecast</button></a></div>
+                
+            </div>
+        </div>
+      </div>  
+    </div> -->
+
+    <!-- <div class="accordion-item">
+      <h2 class="accordion-header" id="headingFour">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            <strong>Quotation</strong>
+        </button>
+      </h2>
+      <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#menu_accordion">
+        <div class="accordion-body-fluid p-2">
+            <div class="d-grid gap-2">
+                
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                
+            </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- <div class="accordion-item">
+      <h2 class="accordion-header" id="headingFive">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+            <strong>Reports</strong>
+        </button>
+      </h2>
+      <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#menu_accordion">
+        <div class="accordion-body-fluid p-2">
+            <div class="d-grid gap-2">
+                
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                
+            </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- <div class="accordion-item">
+      <h2 class="accordion-header" id="headingSix">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+            <strong>Settings</strong>
+        </button>
+      </h2>
+      <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#menu_accordion">
+        <div class="accordion-body-fluid p-2">
+            <div class="d-grid gap-2">
+                
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                <div><a href="{%url 'frontend:inprog'%}"><button class="btn btn-outline-primary w-100">tbd</button></a></div>
+                
+            </div>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingSeven">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+            <strong>Profile</strong>
+        </button>
+      </h2>
+      <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#menu_accordion">
+        <div class="accordion-body-fluid p-2">
+            <div class="d-grid gap-2">
+                <div class="h4 text-wrap text-center">Welcome!!</div>
+                <div class="h4 text-wrap text-center">{{request.user.first_name}}</div>
+                <div><a href="#"><button class="btn btn-outline-primary w-100">Details</button></a></div>
+                <div><a href="{% url 'admin:index' %}"><button class="btn btn-outline-primary w-100">Admin</button></a></div>
+                <div><a href="{%url 'frontend:logoutRedirect'%}"><button class="btn btn-danger w-100">LogOut</button></a></div>
+                
+            </div>
+        </div>
+      </div>        
+    </div>
+    
+</div>
+
+
+

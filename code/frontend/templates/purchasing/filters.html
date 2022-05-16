@@ -1,0 +1,54 @@
+    <div class="row">
+        <div class="col-sm-4">
+            <label for="fiPartName"><h4>Part Name</h4></label>
+        </div>
+        <div class="col-sm-5">
+            <input type="text" placeholder="" id="fiPartName">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <label for="fiPartType"><h4>Part Type</h4></label>
+        </div>
+        <div class="col-sm-5">
+            
+            <select name="part_type" id="fiPartType">
+                <option value="" disabled selected hidden> </option>
+                {%for type in types%}
+                <option value="{{type.category}}">{{type.category | capfirst}}</option>
+                {%endfor%}
+            </select>
+        </div>
+    </div>
+
+   
+
+    <div class="row">
+        <div class="col-sm-2 d-grid">
+            <button class="btn btn-outline-primary" onclick="filter()">Search</button>
+        </div>
+
+        <div class="col-sm-5">
+            <div class="btn-group" role="group" aria-label="filter_buttons">                        
+                <a href="{%url 'frontend:purchasingHome'%}" class="btn btn-outline-warning" id="revert"  >Revert</a>
+                <button type="button" class="btn btn-outline-dark" id="export">Export</button>
+            </div>
+        </div>
+
+        <div class="col-sm-5">
+            <div class="btn-group" role="group" aria-label="update_buttons">
+                <button class="btn btn-primary" onclick="update()">Update</button>
+                <!-- <button class="btn btn-success" type="submit" form="current_update">Commit</button> -->
+                <button class="btn btn-success" id="commit" onclick="update_check()">Commit</button>
+
+                <button class="btn btn-warning" onclick="cell_clear()">Clear</button>
+
+            </div>
+        </div>
+
+        
+        
+    </div>
+{%load static%}
+<script src="{%static 'purchasing/filter.js'%}"></script>

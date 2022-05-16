@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- {%debug%} -->
+    
+    {%if user.is_authenticated%}
+        <meta http-equiv="refresh" content="0; URL={%url 'frontend:home'%}">
+    {%endif%}
+    {%load static%}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP | Login </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- css to make main container edge to edge -->
+    <link rel="stylesheet" href="{%static 'base/e2e.css'%}">
+    
+    
+</head>
+<body>
+    <div class="container-fluid h-100" style="background-color: #0d6efd;">
+        <!-- art work row at 65vh -->
+        <div class="row justify-content-center align-items-center " style="height: 65vh;">
+            <div class="col-lg-6 text-center">
+                <img src="{%static 'base/art.svg'%}" alt="..." width="70%" > 
+            </div>
+        </div>
+
+        
+        <form method="POST" action="{%url 'login'%}">
+            <!-- login section -->
+            <div class="row  justify-content-center" style="height: 30vh;">
+                <div class="col-lg-4 justify-content-center align-self-center text-center d-grid gap-2">
+                    <div class="display-6 text-white">
+                        Welcome!, Please Login.
+                    </div>
+                    
+                        {%csrf_token%}
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Username" name="username">
+                            <label for="floatingInput">Username</label>
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
+                            <label for="floatingPassword">Password</label>
+                            <input type="hidden" name="next" value="{{next}}">
+                        </div>
+                        <div class="justify-content-center d-grid gap-2">
+                        <button type="submit" class="btn btn-warning btn-lg me-md-1 ">Login</button>
+                        <h5>Forgot Password?</h2>
+                        </div>
+                </div>
+            </div>
+        </form>
+        <!-- footer -->
+        <div class="row align-items-center" style="height: 5vh;" >
+            <a href="http://www.freepik.com" style="color: black" class="col-sm-6 text-start">Vector Graphics Designed by upklyak / Freepik</a>
+            <a href="https://github.com/AnoopCharan/erp_webapp" style="color: black" class="col-sm-6 text-end">
+                <img src="{%static 'base/ghMark.png'%}" alt="" width="30rem">
+                Link to GitHub repo</a>
+        </div>
+    </div>
+    
+</body>
+<script type="text/javascript">
+    
+    if ('{{form.errors}}') {
+        let errors = document.createElement('p');
+        errors.innerHTML = '{{form.non_field_errors}}';
+        alert(errors.innerText);
+    }
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</html>

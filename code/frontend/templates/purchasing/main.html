@@ -1,0 +1,17 @@
+{%extends 'base/base.html'%}
+{%block main_content%}
+    <div class="row row_filter">
+        <div class="col-lg-6 col_filter d-grid gap-2">
+            {%include 'purchasing/filters.html'%}
+        </div>
+    </div>
+    <div class="row row_content">
+        <div class="col-lg-6 col_content">
+            {%include 'purchasing/table.html'%}
+        </div>
+        <div class="col-lg-5 col_content m-2" style="height: fit-content;">
+            {%include 'purchasing/summary.html'%}
+        </div>
+        
+    </div>
+{%endblock main_content%}
