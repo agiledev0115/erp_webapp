@@ -285,11 +285,19 @@ class PurchasingCreate(LoginRequiredMixin,View):
         partUrl = request.build_absolute_uri(self.partEndpoint)
         partGet = api_get(url= partUrl, request=request)
 
+        orderUrl = request.build_absolute_uri(self.orderEndpoint)
+        orderGet =api_get(url=orderUrl, request=request)
+
+
         if isinstance(partGet, HttpResponse):
             return partGet
+
+        if isinstance(orderGet, HttpResponse):
+            return orderGet
         
         data={
-            'parts': partGet.json()
+            'parts': partGet.json(),
+            'orders': orderGet.json()
         }
 
         return render(request=request, template_name= self.template_name, context=data)
@@ -298,4 +306,35 @@ class PurchasingCreate(LoginRequiredMixin,View):
 
         print(request.POST)
 
+        incomingPostData = request.POST
+
+        apiPostData =[]
+
+        partData = incomingPostData.getlist("part")
+        quantityData = incomingPostData.getlist("quantity")
+        
+
+        for count,part in enumerate(partData):
+            print(count, part)
+            apiPostData.append({
+                "poNumber": incomingPostData["ponumber"],
+                "quantity": quantityData[count],
+                "dateOrdered": incomingPostData["date_ordered"],
+                "eta": incomingPostData["eta"],
+                "part": part,
+                "unit": "http://127.0.0.1:8000/api/unitmeasure/4/",
+                "status": "http://127.0.0.1:8000/api/status/1/"
+            })
+
+        orderUrl = request.build_absolute_uri(self.orderEndpoint)
+        orderPost = api_post(url=orderUrl,request=request,data= json.dumps(apiPostData), post_content_type="json")
+
+        if isinstance(orderPost, HttpResponse):
+            return orderPost
+
+        
+
         return self.get(request=request)
+
+# class PurchaseUpdate(LoginRequiredMixin,View):
+    

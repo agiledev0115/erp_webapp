@@ -26,7 +26,18 @@ table thead {
     height: 100vh;
 }
 
+.stickAtTop {
+    background-color: white;
+    position:sticky;
+    top: 10px;;
+    
+}
 
+.stickUnder {
+    background-color: white;
+    position: sticky;
+    top: 65px;
+}
 
 .row_1 {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
@@ -127,6 +138,7 @@ table thead {
   width: calc(100% - 15rem);
   max-height: 100%;
   overflow: auto;
+  
   
   
 }

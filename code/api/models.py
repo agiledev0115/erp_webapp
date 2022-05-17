@@ -81,6 +81,7 @@ class Part(models.Model):
     name = models.CharField(max_length=150, null=False)
     category = models.ForeignKey(PartCategory, on_delete=models.deletion.CASCADE, related_name='partCategoryFk')
     supplier = models.ForeignKey(Supplier, on_delete=models.deletion.CASCADE, related_name='supplierFk', null=True)
+    unit = models.ForeignKey(UnitMeasure, on_delete=models.deletion.CASCADE, related_name='partUnitFk', default=4)
 
     def __str__(self) -> str:
         return self.name

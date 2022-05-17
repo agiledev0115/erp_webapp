@@ -61,7 +61,8 @@ class PartSerializer(HyperlinkedModelSerializer):
         extra_kwargs ={
             'url': {'view_name':'api:part-detail'},
             'category':{'view_name':'api:partcategory-detail'},
-            'supplier' :{'view_name':'api:supplier-detail'}
+            'supplier' :{'view_name':'api:supplier-detail'},
+            'unit' :{'view_name':'api:unitmeasure-detail'}
 
         }
 
@@ -89,7 +90,18 @@ class OrderSerializer(HyperlinkedModelSerializer):
 
     class Meta:
         model= models.Order
-        fields='__all__'
+        fields= (
+            'url',
+            'id',
+            'poNumber',
+            'part',
+            'quantity',
+            'unit',
+            'dateOrdered',
+            'eta',
+            'dateDelivered',
+            'status'
+        )
         extra_kwargs = {
             'url':{'view_name':'api:order-detail'},
             'part':{'view_name':'api:part-detail'},
