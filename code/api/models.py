@@ -122,6 +122,9 @@ class Order(models.Model):
     def __str__(self) -> str:
         return f"po#:{self.poNumber}/part:{self.part}/ordered:{self.quantity}"
 
+    class Meta:
+        ordering=['id',]
+
 
 class Receiving(models.Model):
     """

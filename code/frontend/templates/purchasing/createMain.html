@@ -105,6 +105,7 @@
                     <th>Quantity</th>
                     <th>Date Ordered</th>
                     <th>ETA</th>
+                    <th>Status</th>
                 </thead>
                 <tbody>
                     {%for order in orders%}
@@ -117,7 +118,26 @@
                         <td>{{order.partName}}</td>
                         <td>{{order.quantity}}</td>
                         <td>{{order.dateOrdered}}</td>
-                        <td>{{order.eta}}</td>
+                        <td>{%if order.dateDelivered%}
+                            <strong>Delivered</strong>
+                            {%else%}
+                            {{order.eta}}
+                            {%endif%}
+                        </td>
+                        <td>{%if order.status == "http://127.0.0.1:8000/api/status/2/" %}
+                            <span class="text-primary">
+                                <strong>
+                                    Closed
+                                </strong>
+                            </span>
+                            {%elif order.status == "http://127.0.0.1:8000/api/status/1/" %}
+                            <span class="text-warning">
+                                <strong>
+                                    Open
+                                </strong>
+                            </span>
+                            {%endif%}
+                        </td>
                     </tr>
                     {%endfor%}
                 </tbody>

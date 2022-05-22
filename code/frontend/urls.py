@@ -18,7 +18,9 @@ urlpatterns = [
     path('purchasing', views.Purchasing.as_view(), name='purchasingHome'),
     path('purchasing/create', views.PurchasingCreate.as_view(), name='purchasingCreate'),
     path('purchasing/update/<int:pk>', views.PurchaseUpdate.as_view(), name='purchasingUpdate'),
-    
+    path('purchasing/close',views.ClosePurchaseOrder.as_view(), name='purchasingClose' ),
+    path('purchasing/open/<int:pk>',views.OpenPurchaseOrder.as_view(), name='purchasingOpen' ),
+
     path('workingonit', TemplateView.as_view(template_name='inprogress/underWork.html'), name='inprog')
 
     # path('test',(TemplateView.as_view(template_name='registration/login_test.html')), name='test'),

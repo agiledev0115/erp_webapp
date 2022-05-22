@@ -155,6 +155,7 @@ class CurrentStockMVS(ModelViewSet):
 class OrderMVS(ModelViewSet):
     queryset = models.Order.objects.all()
     serializer_class = serializers.OrderSerializer
+
     filter_fields = {
         'part':['exact'],
         'poNumber': ['exact','gt','lt','gte','lte'],

@@ -8,9 +8,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect, HttpResponse
-from utils.apiUtils import api_get, api_auth, api_post
-
-
+from utils.apiUtils import api_get, api_auth, api_post, api_patch
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+decorators=[never_cache,]
 
 # Create your views here.
 
@@ -276,6 +277,7 @@ class Purchasing(LoginRequiredMixin, View):
         
         return render(request, template_name=self.template_name, context=data)
 
+@method_decorator(name='dispatch', decorator=never_cache)
 class PurchasingCreate(LoginRequiredMixin,View):
     template_name = 'purchasing/createMain.html'
     orderEndpoint = reverse_lazy('api:order-list')
@@ -352,9 +354,104 @@ class PurchasingCreate(LoginRequiredMixin,View):
 
 class PurchaseUpdate(LoginRequiredMixin,View):
     template_name = 'purchasing/update.html'
+    # orderEndpoint = reverse_lazy('api:order-list')
+    partEndpoint = reverse_lazy('api:part-list')
 
     def get(self,request,pk):
+        orderEndpoint = reverse_lazy('api:order-detail' , kwargs={'pk':pk} )
+        orderUrl = request.build_absolute_uri(orderEndpoint)
+        orderGet = api_get(url=orderUrl,request=request)
 
-        return render(request, template_name=self.template_name, context={'pk':pk})
+        if isinstance(orderGet, HttpResponse):
+            return orderGet
 
-    
+        orderData = orderGet.json()
+        partUrl = orderData['part']
+        partGet =api_get(url=partUrl, request=request)
+
+        if isinstance(partGet, HttpResponse):
+            return partGet
+        
+        partData = partGet.json()
+
+        data = {
+            'order': orderData,
+            'part': partData
+        }
+
+
+
+        return render(request, template_name=self.template_name, context=data)
+
+
+class ClosePurchaseOrder(LoginRequiredMixin, View):
+
+    def post(self,request):
+        
+        incomingData = request.POST
+        print(incomingData)
+
+        apiPatchData = {
+            'dateDelivered': incomingData['r_date_delivered'],
+            'status' : "http://127.0.0.1:8000/api/status/2/"
+        }
+
+        orderPatchUrl = incomingData['close_url']
+
+        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(apiPatchData), post_content_type='json')
+
+        if isinstance(orderPatch, HttpResponse):
+            return orderPatch
+        
+        
+
+        return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))
+
+class OpenPurchaseOrder(LoginRequiredMixin, View):
+    template_name='purchasing/openOrder.html'
+
+    def get(self, request,pk):
+        orderEndpoint = reverse_lazy('api:order-detail' , kwargs={'pk':pk} )
+        orderUrl = request.build_absolute_uri(orderEndpoint)
+        orderGet = api_get(url=orderUrl,request=request)
+
+        if isinstance(orderGet, HttpResponse):
+            return orderGet
+        
+        orderData = orderGet.json()
+        partUrl = orderData['part']
+        partGet =api_get(url=partUrl, request=request)
+
+        if isinstance(partGet, HttpResponse):
+            return partGet
+        
+        partData = partGet.json()
+
+        data = {
+            'order': orderData,
+            'part': partData
+        }
+
+
+
+        return render(request=request, template_name=self.template_name, context=data)
+
+    def post(self,request,pk):
+
+        incomingData = request.POST
+
+        print(incomingData)
+
+        apiPatchData = {
+            'dateDelivered': None,
+            'status' : "http://127.0.0.1:8000/api/status/1/"
+        }
+        
+        orderPatchUrl = incomingData['order_url']
+
+        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(apiPatchData), post_content_type='json')
+
+        if isinstance(orderPatch, HttpResponse):
+            return orderPatch
+
+        return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))

@@ -1,7 +1,202 @@
 {%extends 'base/base.html'%}
 {%block main_content%}
 
-{{pk}}
+{%if order.dateDelivered%}
+        <meta http-equiv="refresh" content="0; URL={%url 'frontend:purchasingOpen' order.id%}">
+{%endif%}
 
+<div class="row p-2">
+    <div class="col-lg-12 shadow_box">
+        <div class="display-6">
+            Purchase Order#: {{order.poNumber}} | Part: {{part.name}}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form action="" method="post">
+        <div class="shadow_box d-grid gap-2 p-4">
+                <div class="display-5 ">Receiving</div>
+                <div class="row">
+                    <div class="col-sm-6 h4">
+                        <label for="r_completed_id">Order Complete?</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <select name="r_completed" id="r_completed_id" onchange="complete_check()" class="form-select">
+                            <option value="0" selected>No</option>
+                            <option value="1" >Yes</option>
+                        </select>
+                    </div>
+                </div>
+        
+                <div  id="forhiding">
+                    <div class="d-grid gap-2">
+
+                        <div class="row">
+                            <div class="col-sm-6 h4">
+                                <label for="r_received_id">Quantity Received</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="number" id="r_received_id" class="form-control" name="r_received">
+                            </div>
+                        </div>
+            
+                        <div class="row " >
+                            <div class="col-sm-6 h4">
+                                <label for="r_attachment_id">Attachment</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="file" id="r_attachment_id" name="r_attachment" class="form-control">
+                            </div>
+                        </div>
+                
+                        <div class="row " >
+                            <div class="col-sm-6 h4">
+                                <label for="r_data_rec_id">Date Received</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="date" name="r_date_received" id="r_data_rec_id">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row " id="datedeliv_row" style="display: none;">
+                    <div class="col-sm-6 h4">
+                        <label for="r_data_deliv_id">Date of fulfillment</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="date" name="r_date_delivered" id="r_data_deliv_id" form="order_close" required>
+                    </div>
+                </div>
+        
+    
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button class="btn btn-primary btn-lg" type="submit" id="r_button">Submit</button>    
+                    </form>
+                        <form action="{%url 'frontend:purchasingClose'%}" method="post" id="order_close">
+                            {%csrf_token%}
+                            <input type="hidden" name="close_url" value="{{order.url}}">
+                            <input type="hidden" name="close_status" value="closed">
+                            <input type="hidden" name="redirect_pk" value="{{order.id}}">
+                            <button class="btn btn-warning btn-lg" type="submit" id="close_button" style="display:none ;">Close order</button>
+                        </form>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <form action="" method="post">
+
+            <div class="shadow_box d-grid gap-2 p-4">
+    
+                <div class="display-5">Update Order</div>
+                <div class="row">
+                    <div class="col-sm-6 h4">
+                        <label for="received">Quantity Received</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="number" id="received">
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col-sm-6 h4">
+                        <label for="received">Quantity Received</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="number" id="received">
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col-sm-6 h4">
+                        <label for="received">Quantity Received</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="number" id="received">
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col-sm-6 h4">
+                        <label for="received">Quantity Received</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="number" id="received">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary btn-lg" type="submit">Update</button>
+                            
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-danger btn-lg">Delete</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <div class="row bg-secondary" style="height:100% ; ">
+    <div class="col-lg-12 bg-primary d-grid gap-2">
+        <div class="display-5">Receiving Records</div>
+        <table class="table ">
+            <thead>
+                <th>#</th>
+                <th>#</th>
+                <th>#</th>
+                <th>#</th>
+            </thead>
+            
+            <tbody>
+                <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div> -->
+
+<script type="text/javascript">
+    
+    let dateDelivered = document.getElementById("datedeliv_row");
+    let complete = document.getElementById("r_completed_id");
+    let block = document.getElementById("forhiding");
+    let submit = document.getElementById("r_button")
+    let c_button =document.getElementById("close_button");
+
+    function complete_check() {
+        if (complete.value == 1){
+            block.style.display = "none";
+            c_button.style.display = "block";
+            submit.style.display ="none";
+            dateDelivered.style.display = "block";
+            
+        }
+
+        else if (complete.value == 0) {
+            block.style.display = "block";
+            c_button.style.display = "none";
+            submit.style.display ="block"
+            dateDelivered.style.display = "none";
+        }
+        
+    }
+
+
+</script>
 
 {%endblock main_content%}
