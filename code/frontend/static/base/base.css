@@ -31,14 +31,14 @@ table thead {
 .stickAtTop {
     background-color: white;
     position:sticky;
-    top: 10px;;
+    top: 0px;;
     
 }
 
 .stickUnder {
     background-color: white;
     position: sticky;
-    top: 65px;
+    top: 0px;
 }
 
 .row_1 {

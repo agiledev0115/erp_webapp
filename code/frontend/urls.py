@@ -17,6 +17,7 @@ urlpatterns = [
     path('min/upload', views.MinimumStockUpload.as_view(), name='minUpload'),
     path('purchasing', views.Purchasing.as_view(), name='purchasingHome'),
     path('purchasing/create', views.PurchasingCreate.as_view(), name='purchasingCreate'),
+    path('purchasing/update/<int:pk>', views.PurchaseUpdate.as_view(), name='purchasingUpdate'),
     
     path('workingonit', TemplateView.as_view(template_name='inprogress/underWork.html'), name='inprog')
 

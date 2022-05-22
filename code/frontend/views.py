@@ -1,5 +1,6 @@
 from utils.utils import csvread
 import json
+import time
 from django.urls import reverse, resolve, reverse_lazy
 # from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect, render
@@ -282,6 +283,7 @@ class PurchasingCreate(LoginRequiredMixin,View):
 
     def get(self,request, extra=None):
 
+        startTime = time.time()
         partUrl = request.build_absolute_uri(self.partEndpoint)
         partGet = api_get(url= partUrl, request=request)
 
@@ -295,16 +297,27 @@ class PurchasingCreate(LoginRequiredMixin,View):
         if isinstance(orderGet, HttpResponse):
             return orderGet
         
+        partData = partGet.json()
+        orderData = orderGet.json()
+
+        for dict in orderData:
+            for pdict in partData:
+                if pdict['url']== dict['part']:
+                    dict['partName']= pdict['name']
+            print(dict['partName'])                
+
+        
         data={
-            'parts': partGet.json(),
-            'orders': orderGet.json()
+            'parts': partData,
+            'orders': orderData
         }
 
+        print('!!!!!>>> Time: ', (time.time()-startTime))
         return render(request=request, template_name= self.template_name, context=data)
     
     def post(self,request):
 
-        print(request.POST)
+        # print(request.POST)
 
         incomingPostData = request.POST
 
@@ -326,6 +339,7 @@ class PurchasingCreate(LoginRequiredMixin,View):
                 "status": "http://127.0.0.1:8000/api/status/1/"
             })
 
+        # print(apiPostData)
         orderUrl = request.build_absolute_uri(self.orderEndpoint)
         orderPost = api_post(url=orderUrl,request=request,data= json.dumps(apiPostData), post_content_type="json")
 
@@ -336,5 +350,11 @@ class PurchasingCreate(LoginRequiredMixin,View):
 
         return self.get(request=request)
 
-# class PurchaseUpdate(LoginRequiredMixin,View):
+class PurchaseUpdate(LoginRequiredMixin,View):
+    template_name = 'purchasing/update.html'
+
+    def get(self,request,pk):
+
+        return render(request, template_name=self.template_name, context={'pk':pk})
+
     
