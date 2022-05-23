@@ -113,6 +113,7 @@ class Order(models.Model):
     poNumber = models.PositiveIntegerField(null=False)
     part = models.ForeignKey(Part, on_delete=models.deletion.CASCADE, related_name='orderPart')
     quantity = models.PositiveIntegerField(null=False)
+    received = models.PositiveIntegerField(null=True)
     unit = models.ForeignKey(UnitMeasure, on_delete=models.deletion.CASCADE, related_name='unitFk')
     dateOrdered = models.DateField(null=False)
     eta = models.DateField(null=False)

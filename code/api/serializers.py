@@ -96,6 +96,7 @@ class OrderSerializer(HyperlinkedModelSerializer):
             'poNumber',
             'part',
             'quantity',
+            'received',
             'unit',
             'dateOrdered',
             'eta',

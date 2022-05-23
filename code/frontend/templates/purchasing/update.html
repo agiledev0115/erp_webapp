@@ -80,6 +80,9 @@
                         <form action="{%url 'frontend:purchasingClose'%}" method="post" id="order_close">
                             {%csrf_token%}
                             <input type="hidden" name="close_url" value="{{order.url}}">
+                            <input type="hidden" name="close_part" value="{{order.part}}">
+                            <input type="hidden" name="close_part_name" value="{{part.name}}">
+                            <input type="hidden" name="close_order_quantity" value="{{order.quantity}}">
                             <input type="hidden" name="close_status" value="closed">
                             <input type="hidden" name="redirect_pk" value="{{order.id}}">
                             <button class="btn btn-warning btn-lg" type="submit" id="close_button" style="display:none ;">Close order</button>

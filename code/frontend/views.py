@@ -386,23 +386,49 @@ class PurchaseUpdate(LoginRequiredMixin,View):
 
 class ClosePurchaseOrder(LoginRequiredMixin, View):
 
+    # patch order with received=quantity(ordered), status = closed and date delivered !=none (some date)
+    # post a current stock of part with latest current stock + order quantity received
+
     def post(self,request):
         
         incomingData = request.POST
         print(incomingData)
 
-        apiPatchData = {
+        orderPatchUrl = incomingData['close_url']
+        orderPatchData = {
+            'received':incomingData['close_order_quantity'],
             'dateDelivered': incomingData['r_date_delivered'],
             'status' : "http://127.0.0.1:8000/api/status/2/"
         }
 
-        orderPatchUrl = incomingData['close_url']
+        currentEndpoint = request.build_absolute_uri(reverse_lazy('api:currentstock-list'))
 
-        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(apiPatchData), post_content_type='json')
+        currentGetUrl = f"{currentEndpoint}?part__name={incomingData['close_part_name']}"
+        
+        currentGet = api_get(url=currentGetUrl, request=request)
+        if isinstance(currentGet, HttpResponse):
+            return currentGet
+        
+        currentGetData = currentGet.json()
+        currentLatest = currentGetData[-1]
+        
+
+        currentPostUrl = currentEndpoint
+        currentPostData ={
+            'part': incomingData['close_part'],
+            'currentStock': int(incomingData['close_order_quantity']) + int(currentLatest['currentStock'])
+        }
+
+
+        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(orderPatchData), post_content_type='json')
 
         if isinstance(orderPatch, HttpResponse):
             return orderPatch
-        
+
+        currentPost = api_post(request=request, url=currentPostUrl, data=json.dumps(currentPostData), post_content_type='json')
+
+        if isinstance(currentPost, HttpResponse):
+            return currentPost
         
 
         return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))
@@ -438,20 +464,52 @@ class OpenPurchaseOrder(LoginRequiredMixin, View):
 
     def post(self,request,pk):
 
+        # revert received in order to null/0, revert date delivered to null, revert status of order to open
+        # post a new current stock of part with latest current stock - received(which was deleted)
+
         incomingData = request.POST
 
         print(incomingData)
 
-        apiPatchData = {
+        orderPatchUrl = incomingData['order_url']
+        orderPatchData = {
+            'received': None,
             'dateDelivered': None,
             'status' : "http://127.0.0.1:8000/api/status/1/"
         }
         
-        orderPatchUrl = incomingData['order_url']
+        currentEndpoint = request.build_absolute_uri(reverse_lazy('api:currentstock-list'))
+        currentGetUrl = f"{currentEndpoint}?part__name={incomingData['order_part_name']}"
+        currentGet = api_get(url=currentGetUrl, request=request)
+        if isinstance(currentGet, HttpResponse):
+            return currentGet
+        
+        currentGetData = currentGet.json()
+        currentLatest = currentGetData[-1]
+        
+        if int(currentLatest['currentStock']) > int(incomingData['order_received']):
+            newCurrentStock = int(currentLatest['currentStock']) - int(incomingData['order_received'])
+        else: 
+            newCurrentStock=0
 
-        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(apiPatchData), post_content_type='json')
+        currentPostUrl = currentEndpoint
+        currentPostData ={
+            'part': incomingData['order_part'],
+            'currentStock': newCurrentStock
+        }
+
+
+        
+        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(orderPatchData), post_content_type='json')
 
         if isinstance(orderPatch, HttpResponse):
             return orderPatch
+
+        currentPost = api_post(request=request, url=currentPostUrl, data=json.dumps(currentPostData), post_content_type='json')
+
+        if isinstance(currentPost, HttpResponse):
+            return currentPost
+
+
 
         return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))
