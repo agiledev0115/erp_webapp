@@ -13,6 +13,8 @@ body {
 }
 
 
+
+
 table thead {
     position: sticky;
     top: 0;
@@ -26,12 +28,24 @@ table thead {
     height: 100vh;
 }
 
+.stickAtTop {
+    background-color: white;
+    position:sticky;
+    top: 0px;;
+    
+}
 
+.stickUnder {
+    background-color: white;
+    position: sticky;
+    top: 0px;
+}
 
 .row_1 {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
     height: 5vh;
     padding: 0px;
+    min-height:42px ;
 }
 
 
@@ -89,6 +103,7 @@ table thead {
     padding: 1rem;
     height: 100%;
     overflow: auto;
+    padding-top: 0px;
 
 }
 
@@ -115,10 +130,11 @@ table thead {
 .fixed-left {
 
     left: 0;
-    padding-top: 10rem;
+    padding-top: 5rem;
     min-height: 100%;
     height: 100%;
     box-shadow: 0px 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    overflow: auto;
 
 }
 .fixed-right {
@@ -127,8 +143,7 @@ table thead {
   width: calc(100% - 15rem);
   max-height: 100%;
   overflow: auto;
-  
-  
+   
 }
 
 

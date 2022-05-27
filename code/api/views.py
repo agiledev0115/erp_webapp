@@ -105,13 +105,13 @@ class MinimumStockMVS(ModelViewSet):
         # for multiple posting, incoming request.data type is array of dicts. !! add many=True in serializer line
 
         if all([isinstance(request.data, list), len(request.data) ==1]): 
-            post_slr= serializers.MinimumStockSerializer(data=request.data[0], context={"request":request})
+            post_slr= self.serializer_class(data=request.data[0], context={"request":request})
         
         elif all([isinstance(request.data, list), len(request.data) > 1]): 
-            post_slr = serializers.MinimumStockSerializer(data=request.data, many=True, context={'request':request})
+            post_slr = self.serializer_class(data=request.data, many=True, context={'request':request})
 
         else:
-            post_slr= serializers.MinimumStockSerializer(data=request.data, context={"request":request})
+            post_slr= self.serializer_class(data=request.data, context={"request":request})
 
 
         if post_slr.is_valid():
@@ -137,13 +137,13 @@ class CurrentStockMVS(ModelViewSet):
         # for multiple posting, incoming request.data type is array of dicts. !! add many=True in serializer line
 
         if all([isinstance(request.data, list), len(request.data) ==1]): 
-            post_slr= serializers.CurrentStockSerializer(data=request.data[0], context={"request":request})
+            post_slr= self.serializer_class(data=request.data[0], context={"request":request})
         
         elif all([isinstance(request.data, list), len(request.data) > 1]): 
-            post_slr = serializers.CurrentStockSerializer(data=request.data, many=True, context={'request':request})
+            post_slr = self.serializer_class(data=request.data, many=True, context={'request':request})
 
         else:
-            post_slr= serializers.CurrentStockSerializer(data=request.data, context={"request":request})
+            post_slr= self.serializer_class(data=request.data, context={"request":request})
 
 
         if post_slr.is_valid():
@@ -155,6 +155,7 @@ class CurrentStockMVS(ModelViewSet):
 class OrderMVS(ModelViewSet):
     queryset = models.Order.objects.all()
     serializer_class = serializers.OrderSerializer
+
     filter_fields = {
         'part':['exact'],
         'poNumber': ['exact','gt','lt','gte','lte'],
@@ -168,6 +169,26 @@ class OrderMVS(ModelViewSet):
         'unit__unit':['icontains', 'iregex', 'exact'],
     }
 
+    def create(self, request, *args, **kwargs):
+        # type checking of incoming request data to support multiple posting to API.
+        # For single instance posting, incoming request.data is of type django queryset (Dict)
+        # for multiple posting, incoming request.data type is array of dicts. !! add many=True in serializer line
+
+        if all([isinstance(request.data, list), len(request.data) ==1]): 
+            post_slr= self.serializer_class(data=request.data[0], context={"request":request})
+        
+        elif all([isinstance(request.data, list), len(request.data) > 1]): 
+            post_slr = self.serializer_class(data=request.data, many=True, context={'request':request})
+
+        else:
+            post_slr= self.serializer_class(data=request.data, context={"request":request})
+
+
+        if post_slr.is_valid():
+            post_slr.save()
+            return Response(data= post_slr.data, status=status.HTTP_201_CREATED)
+        print(post_slr.errors)
+        return Response(data=post_slr.errors, status= status.HTTP_400_BAD_REQUEST)
 
 class ReceivingMVS(ModelViewSet):
     queryset = models.Receiving.objects.all()

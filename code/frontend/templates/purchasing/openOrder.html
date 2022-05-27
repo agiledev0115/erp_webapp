@@ -1,0 +1,46 @@
+{%extends 'base/base.html'%}
+{%block main_content%}
+
+<!-- {%if order.dateDelivered != "" %}
+        <meta http-equiv="refresh" content="0; URL={%url 'frontend:purchasingUpdate' order.id%}">
+{%endif%} -->
+
+<div class="row p-2">
+    <div class="col-lg-12 shadow_box">
+        <div class="display-6">
+            Purchase Order#: {{order.poNumber}} | Part: {{part.name}}
+        </div>
+        <div class="display-5 text-success"> <strong>CLOSED</strong></div>
+    </div>
+</div>
+
+<div class="row p-2">
+    <form action="" method="post">
+        {%csrf_token%}
+        <input type="hidden" name="order_url" value="{{order.url}}">
+        <input type="hidden" name="order_received" value="{{order.received}}">
+        <input type="hidden" name="order_part" value="{{order.part}}">
+        <input type="hidden" name="order_part_name" value="{{part.name}}">
+        <input type="hidden" name="redirect_pk" value="{{order.id}}">
+        <div class="col-lg-5 shadow_box p-2 ">
+            <div class="row align-items-center justify-content-center" >
+                <div class="col-sm-4 h4">
+                    <label for="r_reopen_id">Reopen Order?</label>
+                </div>
+                <div class="col-sm-4">
+                    <select name="r_reopen" id="r_reopen_id" class="form-select">
+                        <option value="0" selected>No</option>
+                        <option value="1" >Yes</option>
+                    </select>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <button class="btn btn-primary btn-lg" type="submit">Reopen</button>
+                </div>
+            </div>
+            
+        </div>
+
+    </form>
+</div>
+
+{%endblock main_content%}

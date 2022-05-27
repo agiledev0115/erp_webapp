@@ -1,5 +1,6 @@
 from utils.utils import csvread
 import json
+import time
 from django.urls import reverse, resolve, reverse_lazy
 # from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect, render
@@ -7,9 +8,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect, HttpResponse
-from utils.apiUtils import api_get, api_auth, api_post
-
-
+from utils.apiUtils import api_get, api_auth, api_post, api_patch
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+decorators=[never_cache,]
 
 # Create your views here.
 
@@ -275,6 +277,7 @@ class Purchasing(LoginRequiredMixin, View):
         
         return render(request, template_name=self.template_name, context=data)
 
+@method_decorator(name='dispatch', decorator=never_cache)
 class PurchasingCreate(LoginRequiredMixin,View):
     template_name = 'purchasing/createMain.html'
     orderEndpoint = reverse_lazy('api:order-list')
@@ -282,20 +285,231 @@ class PurchasingCreate(LoginRequiredMixin,View):
 
     def get(self,request, extra=None):
 
+        startTime = time.time()
         partUrl = request.build_absolute_uri(self.partEndpoint)
         partGet = api_get(url= partUrl, request=request)
 
+        orderUrl = request.build_absolute_uri(self.orderEndpoint)
+        orderGet =api_get(url=orderUrl, request=request)
+
+
         if isinstance(partGet, HttpResponse):
             return partGet
+
+        if isinstance(orderGet, HttpResponse):
+            return orderGet
+        
+        partData = partGet.json()
+        orderData = orderGet.json()
+
+        for dict in orderData:
+            for pdict in partData:
+                if pdict['url']== dict['part']:
+                    dict['partName']= pdict['name']
+            print(dict['partName'])                
+
         
         data={
-            'parts': partGet.json()
+            'parts': partData,
+            'orders': orderData
         }
 
+        print('!!!!!>>> Time: ', (time.time()-startTime))
         return render(request=request, template_name= self.template_name, context=data)
     
     def post(self,request):
 
-        print(request.POST)
+        # print(request.POST)
+
+        incomingPostData = request.POST
+
+        apiPostData =[]
+
+        partData = incomingPostData.getlist("part")
+        quantityData = incomingPostData.getlist("quantity")
+        
+
+        for count,part in enumerate(partData):
+            print(count, part)
+            apiPostData.append({
+                "poNumber": incomingPostData["ponumber"],
+                "quantity": quantityData[count],
+                "dateOrdered": incomingPostData["date_ordered"],
+                "eta": incomingPostData["eta"],
+                "part": part,
+                "unit": "http://127.0.0.1:8000/api/unitmeasure/4/",
+                "status": "http://127.0.0.1:8000/api/status/1/"
+            })
+
+        # print(apiPostData)
+        orderUrl = request.build_absolute_uri(self.orderEndpoint)
+        orderPost = api_post(url=orderUrl,request=request,data= json.dumps(apiPostData), post_content_type="json")
+
+        if isinstance(orderPost, HttpResponse):
+            return orderPost
+
+        
 
         return self.get(request=request)
+
+class PurchaseUpdate(LoginRequiredMixin,View):
+    template_name = 'purchasing/update.html'
+    # orderEndpoint = reverse_lazy('api:order-list')
+    partEndpoint = reverse_lazy('api:part-list')
+
+    def get(self,request,pk):
+        orderEndpoint = reverse_lazy('api:order-detail' , kwargs={'pk':pk} )
+        orderUrl = request.build_absolute_uri(orderEndpoint)
+        orderGet = api_get(url=orderUrl,request=request)
+
+        if isinstance(orderGet, HttpResponse):
+            return orderGet
+
+        orderData = orderGet.json()
+        partUrl = orderData['part']
+        partGet =api_get(url=partUrl, request=request)
+
+        if isinstance(partGet, HttpResponse):
+            return partGet
+        
+        partData = partGet.json()
+
+        data = {
+            'order': orderData,
+            'part': partData
+        }
+
+
+
+        return render(request, template_name=self.template_name, context=data)
+
+
+class ClosePurchaseOrder(LoginRequiredMixin, View):
+
+    # patch order with received=quantity(ordered), status = closed and date delivered !=none (some date)
+    # post a current stock of part with latest current stock + order quantity received
+
+    def post(self,request):
+        
+        incomingData = request.POST
+        print(incomingData)
+
+        orderPatchUrl = incomingData['close_url']
+        orderPatchData = {
+            'received':incomingData['close_order_quantity'],
+            'dateDelivered': incomingData['r_date_delivered'],
+            'status' : "http://127.0.0.1:8000/api/status/2/"
+        }
+
+        currentEndpoint = request.build_absolute_uri(reverse_lazy('api:currentstock-list'))
+
+        currentGetUrl = f"{currentEndpoint}?part__name={incomingData['close_part_name']}"
+        
+        currentGet = api_get(url=currentGetUrl, request=request)
+        if isinstance(currentGet, HttpResponse):
+            return currentGet
+        
+        currentGetData = currentGet.json()
+        currentLatest = currentGetData[-1]
+        
+
+        currentPostUrl = currentEndpoint
+        currentPostData ={
+            'part': incomingData['close_part'],
+            'currentStock': int(incomingData['close_order_quantity']) + int(currentLatest['currentStock'])
+        }
+
+
+        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(orderPatchData), post_content_type='json')
+
+        if isinstance(orderPatch, HttpResponse):
+            return orderPatch
+
+        currentPost = api_post(request=request, url=currentPostUrl, data=json.dumps(currentPostData), post_content_type='json')
+
+        if isinstance(currentPost, HttpResponse):
+            return currentPost
+        
+
+        return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))
+
+class OpenPurchaseOrder(LoginRequiredMixin, View):
+    template_name='purchasing/openOrder.html'
+
+    def get(self, request,pk):
+        orderEndpoint = reverse_lazy('api:order-detail' , kwargs={'pk':pk} )
+        orderUrl = request.build_absolute_uri(orderEndpoint)
+        orderGet = api_get(url=orderUrl,request=request)
+
+        if isinstance(orderGet, HttpResponse):
+            return orderGet
+        
+        orderData = orderGet.json()
+        partUrl = orderData['part']
+        partGet =api_get(url=partUrl, request=request)
+
+        if isinstance(partGet, HttpResponse):
+            return partGet
+        
+        partData = partGet.json()
+
+        data = {
+            'order': orderData,
+            'part': partData
+        }
+
+
+
+        return render(request=request, template_name=self.template_name, context=data)
+
+    def post(self,request,pk):
+
+        # revert received in order to null/0, revert date delivered to null, revert status of order to open
+        # post a new current stock of part with latest current stock - received(which was deleted)
+
+        incomingData = request.POST
+
+        print(incomingData)
+
+        orderPatchUrl = incomingData['order_url']
+        orderPatchData = {
+            'received': None,
+            'dateDelivered': None,
+            'status' : "http://127.0.0.1:8000/api/status/1/"
+        }
+        
+        currentEndpoint = request.build_absolute_uri(reverse_lazy('api:currentstock-list'))
+        currentGetUrl = f"{currentEndpoint}?part__name={incomingData['order_part_name']}"
+        currentGet = api_get(url=currentGetUrl, request=request)
+        if isinstance(currentGet, HttpResponse):
+            return currentGet
+        
+        currentGetData = currentGet.json()
+        currentLatest = currentGetData[-1]
+        
+        if int(currentLatest['currentStock']) > int(incomingData['order_received']):
+            newCurrentStock = int(currentLatest['currentStock']) - int(incomingData['order_received'])
+        else: 
+            newCurrentStock=0
+
+        currentPostUrl = currentEndpoint
+        currentPostData ={
+            'part': incomingData['order_part'],
+            'currentStock': newCurrentStock
+        }
+
+
+        
+        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(orderPatchData), post_content_type='json')
+
+        if isinstance(orderPatch, HttpResponse):
+            return orderPatch
+
+        currentPost = api_post(request=request, url=currentPostUrl, data=json.dumps(currentPostData), post_content_type='json')
+
+        if isinstance(currentPost, HttpResponse):
+            return currentPost
+
+
+
+        return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))

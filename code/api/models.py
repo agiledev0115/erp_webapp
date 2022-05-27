@@ -81,6 +81,7 @@ class Part(models.Model):
     name = models.CharField(max_length=150, null=False)
     category = models.ForeignKey(PartCategory, on_delete=models.deletion.CASCADE, related_name='partCategoryFk')
     supplier = models.ForeignKey(Supplier, on_delete=models.deletion.CASCADE, related_name='supplierFk', null=True)
+    unit = models.ForeignKey(UnitMeasure, on_delete=models.deletion.CASCADE, related_name='partUnitFk', default=4)
 
     def __str__(self) -> str:
         return self.name
@@ -112,6 +113,7 @@ class Order(models.Model):
     poNumber = models.PositiveIntegerField(null=False)
     part = models.ForeignKey(Part, on_delete=models.deletion.CASCADE, related_name='orderPart')
     quantity = models.PositiveIntegerField(null=False)
+    received = models.PositiveIntegerField(null=True)
     unit = models.ForeignKey(UnitMeasure, on_delete=models.deletion.CASCADE, related_name='unitFk')
     dateOrdered = models.DateField(null=False)
     eta = models.DateField(null=False)
@@ -120,6 +122,9 @@ class Order(models.Model):
 
     def __str__(self) -> str:
         return f"po#:{self.poNumber}/part:{self.part}/ordered:{self.quantity}"
+
+    class Meta:
+        ordering=['id',]
 
 
 class Receiving(models.Model):
