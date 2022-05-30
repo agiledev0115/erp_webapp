@@ -356,6 +356,9 @@ class PurchaseUpdate(LoginRequiredMixin,View):
     template_name = 'purchasing/update.html'
     # orderEndpoint = reverse_lazy('api:order-list')
     partEndpoint = reverse_lazy('api:part-list')
+    attachmentEndpoint = reverse_lazy('api:attachment-list')
+
+
 
     def get(self,request,pk):
         orderEndpoint = reverse_lazy('api:order-detail' , kwargs={'pk':pk} )
@@ -382,6 +385,24 @@ class PurchaseUpdate(LoginRequiredMixin,View):
 
 
         return render(request, template_name=self.template_name, context=data)
+
+    def post(self,request, pk):
+
+        print(request.POST)
+
+        incomingData = request.POST
+
+
+        if request.FILES['r_attachment']:
+            print(request.FILES['r_attachment'])
+            attachmentUrl = request.build_absolute_uri(self.attachmentEndpoint)
+            attachmentPost = api_post(url=attachmentUrl, request=request, files=request.FILES['r_attachment'],data=None)
+
+            # if isinstance(attachmentPost, HttpResponse):
+            #     return attachmentPost
+
+
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class ClosePurchaseOrder(LoginRequiredMixin, View):
@@ -513,3 +534,4 @@ class OpenPurchaseOrder(LoginRequiredMixin, View):
 
 
         return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))
+

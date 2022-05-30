@@ -15,7 +15,8 @@
 
 <div class="row">
     <div class="col-lg-6">
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
         <div class="shadow_box d-grid gap-2 p-4">
                 <div class="display-5 ">Receiving</div>
                 <div class="row">
