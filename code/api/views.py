@@ -42,7 +42,7 @@ class AttachmentMVS(ModelViewSet):
     }
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
+        print('!!!ATTACHMENT API:REQUEST DATA:',request.FILES)
         # print(">>>>>>>>>>>",request.data['attachedFile'].content_type)
         # print(">>>>>>>>>>>",request.data['attachedFile'].name)
 
@@ -212,8 +212,9 @@ class Dash(ModelViewSet):
                     (SELECT parts_order.id, parts_order.name, ac.category, parts_order.onOrder FROM
                         (SELECT * FROM api_part AS ap
                         LEFT JOIN (SELECT part_id,
-                                SUM(quantity) AS onOrder 
-                                FROM api_order as ao 
+                                SUM(stillonorder) AS onOrder 
+                                FROM 
+                                (select *, coalesce((quantity - received),quantity) as stillonorder from api_order) as ao 
                                 GROUP BY part_id 
                                 ORDER BY part_id) AS oq
                         ON ap.id = oq.part_id ORDER BY ap.id) as parts_order

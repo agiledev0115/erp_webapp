@@ -39,7 +39,7 @@
                                 <label for="r_received_id">Quantity Received</label>
                             </div>
                             <div class="col-sm-6">
-                                <input type="number" id="r_received_id" class="form-control" name="r_received">
+                                <input type="number" id="r_received_id" class="form-control" name="r_received" >
                             </div>
                         </div>
             
@@ -95,6 +95,7 @@
     </div>
     <div class="col-lg-6">
         <form action="" method="post">
+            {%csrf_token%}
 
             <div class="shadow_box d-grid gap-2 p-4">
     
@@ -181,6 +182,10 @@
     let block = document.getElementById("forhiding");
     let submit = document.getElementById("r_button")
     let c_button =document.getElementById("close_button");
+    let stillOnOrder = parseInt("{{order.quantity}}") -( parseInt("{{order.received}}") || 0);
+    let quantityInput = document.getElementById("r_received_id");
+    quantityInput.setAttribute('placeholder', stillOnOrder);
+    
 
     function complete_check() {
         if (complete.value == 1){

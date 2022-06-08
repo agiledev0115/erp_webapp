@@ -1,3 +1,4 @@
+import requests
 from utils.utils import csvread
 import json
 import time
@@ -394,12 +395,16 @@ class PurchaseUpdate(LoginRequiredMixin,View):
 
 
         if request.FILES['r_attachment']:
-            print(request.FILES['r_attachment'])
+            print('@@!!',request.FILES)
+            attachment =request.FILES
             attachmentUrl = request.build_absolute_uri(self.attachmentEndpoint)
-            attachmentPost = api_post(url=attachmentUrl, request=request, files=request.FILES['r_attachment'],data=None)
+            print(attachmentUrl)
 
-            # if isinstance(attachmentPost, HttpResponse):
-            #     return attachmentPost
+            attachmentPost= api_post(request=request ,url=attachmentUrl, files={'attachedFile': request.FILES['r_attachment']})
+            
+
+            if isinstance(attachmentPost, HttpResponse):
+                return attachmentPost
 
 
         return redirect(request.META.get('HTTP_REFERER'))
