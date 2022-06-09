@@ -214,7 +214,7 @@ class Dash(ModelViewSet):
                         LEFT JOIN (SELECT part_id,
                                 SUM(stillonorder) AS onOrder 
                                 FROM 
-                                (select *, coalesce((quantity - received),quantity) as stillonorder from api_order) as ao 
+                                (select *, GREATEST(coalesce((quantity - received),quantity), 0) as stillonorder from api_order) as ao 
                                 GROUP BY part_id 
                                 ORDER BY part_id) AS oq
                         ON ap.id = oq.part_id ORDER BY ap.id) as parts_order

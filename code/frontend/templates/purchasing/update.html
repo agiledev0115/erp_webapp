@@ -17,6 +17,11 @@
     <div class="col-lg-6">
         <form action="" method="post" enctype="multipart/form-data">
             {%csrf_token%}
+            <input type="hidden" name="o_quantity" value="{{order.quantity}}">
+            <input type="hidden" name="o_received" value="{{order.received}}">
+            <input type="hidden" name="o_url" value="{{order.url}}">
+            <input type="hidden" name="o_part" value="{{order.part}}">
+            <input type="hidden" name="o_part_name" value="{{part.name}}">
         <div class="shadow_box d-grid gap-2 p-4">
                 <div class="display-5 ">Receiving</div>
                 <div class="row">
@@ -39,7 +44,7 @@
                                 <label for="r_received_id">Quantity Received</label>
                             </div>
                             <div class="col-sm-6">
-                                <input type="number" id="r_received_id" class="form-control" name="r_received" >
+                                <input required type="number" id="r_received_id" class="form-control" name="r_received" >
                             </div>
                         </div>
             
@@ -57,7 +62,7 @@
                                 <label for="r_data_rec_id">Date Received</label>
                             </div>
                             <div class="col-sm-6">
-                                <input class="form-control" type="date" name="r_date_received" id="r_data_rec_id">
+                                <input required class="form-control" type="date" name="r_date_received" id="r_data_rec_id">
                             </div>
                         </div>
                     </div>
