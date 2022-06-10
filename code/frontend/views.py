@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect, HttpResponse
-from utils.apiUtils import api_get, api_auth, api_post, api_patch
+from utils.apiUtils import api_get, api_auth, api_post, api_patch, api_delete
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 decorators=[never_cache,]
@@ -373,6 +373,12 @@ class PurchaseUpdate(LoginRequiredMixin,View):
         if isinstance(orderGet, HttpResponse):
             return orderGet
 
+        partListUrl = request.build_absolute_uri(self.partEndpoint)
+        partListGet = api_get(url=partListUrl,request=request)
+
+        if isinstance(partListGet, HttpResponse):
+            return partListGet
+
         orderData = orderGet.json()
         partUrl = orderData['part']
         partGet =api_get(url=partUrl, request=request)
@@ -384,7 +390,8 @@ class PurchaseUpdate(LoginRequiredMixin,View):
 
         data = {
             'order': orderData,
-            'part': partData
+            'part': partData,
+            'partlist': partListGet.json()
         }
 
         return render(request, template_name=self.template_name, context=data)
@@ -625,3 +632,13 @@ class UpdatePurchaseOrder(LoginRequiredMixin, View):
         print(request.POST)
 
         return redirect(request.META.get('HTTP_REFERER'))
+
+class DeletePurchaseOrder(LoginRequiredMixin, View):
+
+    def post(self, request):
+        print(request.POST['d_url'])
+        orderDelete= api_delete(request=request,url=request.POST['d_url'])
+        if isinstance(orderDelete, HttpResponse):
+            return orderDelete
+
+        return redirect(to= reverse_lazy('frontend:purchasingCreate'))

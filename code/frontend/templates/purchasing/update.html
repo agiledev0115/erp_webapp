@@ -107,37 +107,43 @@
                 <div class="display-5">Update Order</div>
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="received">Quantity Received</label>
+                        <label for="u_ponumber">PO Number</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="received">
+                        <input type="number" id="u_ponumber" name="u_ponumber" placeholder="{{order.poNumber}}">
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="received">Quantity Received</label>
+                        <label for="u_part">Part</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="received">
+                        <select name="u_part" id="u_part">
+                            <option value="{{part.url}}"  selected >{{part.name}}</option>
+
+                            {%for obj in partlist%}
+                            <option value='{{obj.url}}'>{{obj.name}}</option>
+                            {%endfor%}
+                        </select>
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="received">Quantity Received</label>
+                        <label for="u_quantity">Quantity Ordered</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="received">
+                        <input type="number" id="u_quantity" name="u_quantity" placeholder="{{order.quantity}}">
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="received">Quantity Received</label>
+                        <label for="u_eta">ETA</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="received">
+                        <input type="date" id="u_eta"  name="u_eta">
                     </div>
                 </div>
 
@@ -145,14 +151,18 @@
                     <div class="col-sm-2">
                         <button class="btn btn-primary btn-lg" type="submit">Update</button>
                             
+                    </form>
                     </div>
                     <div class="col-sm-2">
-                        <button class="btn btn-danger btn-lg">Delete</button>
+                        <form action="{%url 'frontend:purchaseDelete'%}" method="post">
+                            {%csrf_token%}
+                            <input type="hidden" name="d_url" value="{{order.url}}">
+                            <button class="btn btn-danger btn-lg">Delete</button>
+                        </form>
                     </div>
                 </div>
 
             </div>
-        </form>
     </div>
 </div>
 

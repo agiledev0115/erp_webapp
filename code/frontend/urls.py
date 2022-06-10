@@ -20,6 +20,7 @@ urlpatterns = [
     path('purchasing/update/<int:pk>', views.PurchaseUpdate.as_view(), name='purchasingUpdate'),
     path('purchasing/close',views.ClosePurchaseOrder.as_view(), name='purchasingClose' ),
     path('purchasing/open/<int:pk>',views.OpenPurchaseOrder.as_view(), name='purchasingOpen' ),
+    path('purchasing/delete', views.DeletePurchaseOrder.as_view(), name='purchaseDelete'),
 
     path('workingonit', TemplateView.as_view(template_name='inprogress/underWork.html'), name='inprog')
 
