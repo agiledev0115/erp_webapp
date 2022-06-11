@@ -124,13 +124,13 @@
                             {{order.eta}}
                             {%endif%}
                         </td>
-                        <td>{%if order.status == "http://127.0.0.1:8000/api/status/2/" %}
+                        <td>{%if order.status|slice:'-2:-1' == "2" %}
                             <span class="text-primary">
                                 <strong>
                                     Closed
                                 </strong>
                             </span>
-                            {%elif order.status == "http://127.0.0.1:8000/api/status/1/" %}
+                            {%elif order.status|slice:'-2:-1' == "1" %}
                             <span class="text-warning">
                                 <strong>
                                     Open
