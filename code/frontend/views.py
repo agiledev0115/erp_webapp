@@ -1,3 +1,4 @@
+import requests
 from utils.utils import csvread
 import json
 import time
@@ -8,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect, HttpResponse
-from utils.apiUtils import api_get, api_auth, api_post, api_patch
+from utils.apiUtils import api_get, api_auth, api_post, api_patch, api_delete
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 decorators=[never_cache,]
@@ -354,8 +355,15 @@ class PurchasingCreate(LoginRequiredMixin,View):
 
 class PurchaseUpdate(LoginRequiredMixin,View):
     template_name = 'purchasing/update.html'
-    # orderEndpoint = reverse_lazy('api:order-list')
     partEndpoint = reverse_lazy('api:part-list')
+    attachmentEndpoint = reverse_lazy('api:attachment-list')
+    currentEndpoint =reverse_lazy('api:currentstock-list')
+    receivingEndpoint = reverse_lazy('api:receiving-list')
+
+
+    reverse_lazy('api:currentstock-list')
+
+
 
     def get(self,request,pk):
         orderEndpoint = reverse_lazy('api:order-detail' , kwargs={'pk':pk} )
@@ -364,6 +372,12 @@ class PurchaseUpdate(LoginRequiredMixin,View):
 
         if isinstance(orderGet, HttpResponse):
             return orderGet
+
+        partListUrl = request.build_absolute_uri(self.partEndpoint)
+        partListGet = api_get(url=partListUrl,request=request)
+
+        if isinstance(partListGet, HttpResponse):
+            return partListGet
 
         orderData = orderGet.json()
         partUrl = orderData['part']
@@ -376,12 +390,109 @@ class PurchaseUpdate(LoginRequiredMixin,View):
 
         data = {
             'order': orderData,
-            'part': partData
+            'part': partData,
+            'partlist': partListGet.json()
         }
 
-
-
         return render(request, template_name=self.template_name, context=data)
+
+    def post(self,request, pk):
+
+        print(request.POST)
+        incomingData = request.POST
+        
+        # Check if any attachement is given and post to api,
+        # on successful posting of attachment, get url of the attachment
+        if request.FILES:
+            # print('@@!!',request.FILES)
+            # attachment =request.FILES
+            attachmentUrl = request.build_absolute_uri(self.attachmentEndpoint)
+            # print(attachmentUrl)
+
+            attachmentPost= api_post(request=request ,url=attachmentUrl, files={'attachedFile': request.FILES['r_attachment']})
+            print('##!!>>', type(attachmentPost.content))
+
+            if isinstance(attachmentPost, HttpResponse):
+                return attachmentPost
+            
+            attachmentPostResponseDict = json.loads(attachmentPost.content)
+            # print('##!!>>', attachmentPostResponseDict['url'])
+            receivingAttachment= attachmentPostResponseDict['url']
+        
+        else:
+            receivingAttachment=None
+
+        # checks if user input any received quantity
+        # adds the received quantity to latest current stock of part
+        # patch received in order record
+        # adds a receiving record
+        if incomingData['r_received']:
+            # add a latest current stock record
+            currentGetUrl = f"{request.build_absolute_uri(self.currentEndpoint)}?part__name={incomingData['o_part_name']}"
+            currentGet = api_get(url=currentGetUrl, request=request)
+            if isinstance(currentGet, HttpResponse):
+                return currentGet
+            
+            currentGetData = currentGet.json()
+            currentLatest = currentGetData[-1]
+            currentPostUrl = request.build_absolute_uri(self.currentEndpoint)
+            currentPostData ={
+                'part': incomingData['o_part'],
+                'currentStock': int(incomingData['r_received']) + int(currentLatest['currentStock'])
+            }
+
+            currentPost = api_post(url=currentPostUrl, request=request, data=json.dumps(currentPostData), post_content_type='json')
+            if isinstance(currentPost, HttpResponse):
+                return currentPost
+
+            # patch order record
+            orderPatchUrl = incomingData['o_url']
+            try:
+                orderPatchData = {
+                    'received':int(incomingData['r_received'])+int(incomingData['o_received']),
+                }
+            except:
+                orderPatchData = {
+                    'received':int(incomingData['r_received']),
+                }
+
+            # if incomingData['o_received'] != 'None':
+                 
+            #     orderPatchData = {
+            #         'received':int(incomingData['r_received'])+int(incomingData['o_received']),
+            #     }
+            # orderPatchData = {
+            #         'received':int(incomingData['r_received']),
+            #     }
+
+
+            # add record to receiving
+            receivingUrl= request.build_absolute_uri(self.receivingEndpoint)
+            receivingPostData = {
+                    "quantity": int(incomingData['r_received']),
+                    "orderItem": incomingData['o_url'],
+                    "attachment": receivingAttachment 
+                }
+            
+            receivingPost = api_post(url=receivingUrl, request=request, data= json.dumps(receivingPostData), post_content_type='json')
+            if isinstance(receivingPost, HttpResponse):
+                return receivingPost
+            
+            # if received quantity is more than ordered, closes the order
+            print('$$!!>>(received, ordered)', int(incomingData['r_received']), int(incomingData['o_quantity']) )
+            if (int(incomingData['r_received']) > int(incomingData['o_quantity'])-int(incomingData['o_received'])) or (int(incomingData['r_received']) == int(incomingData['o_quantity'])-int(incomingData['o_received'])):
+                # print('$$!!>>(received, ordered)', int(incomingData['r_received']), int(incomingData['o_quantity']) )
+                orderPatchData.update({'status' : "http://127.0.0.1:8000/api/status/2/", 'dateDelivered': incomingData['r_date_received'],})
+            
+            orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(orderPatchData), post_content_type='json')
+            if isinstance(orderPatch, HttpResponse):
+                return orderPatch
+                
+
+
+
+
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class ClosePurchaseOrder(LoginRequiredMixin, View):
@@ -473,7 +584,7 @@ class OpenPurchaseOrder(LoginRequiredMixin, View):
 
         orderPatchUrl = incomingData['order_url']
         orderPatchData = {
-            'received': None,
+            'received': 0,
             'dateDelivered': None,
             'status' : "http://127.0.0.1:8000/api/status/1/"
         }
@@ -513,3 +624,44 @@ class OpenPurchaseOrder(LoginRequiredMixin, View):
 
 
         return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))
+
+
+class EditPurchaseOrder(LoginRequiredMixin, View):
+
+    def post(self, request):
+        print(request.POST)
+        incomingData= request.POST
+
+        orderPatchUrl = incomingData['e_url']
+        orderPatchData={}
+
+        if incomingData['e_ponumber']:
+            orderPatchData['poNumber'] = int(incomingData['e_ponumber'])
+        
+        if incomingData['e_part']:
+            orderPatchData['part'] = incomingData['e_part']
+        
+        if incomingData['e_quantity']:
+            orderPatchData['quantity'] = incomingData['e_quantity']
+
+        if incomingData['e_eta']:
+            orderPatchData['eta'] = incomingData['e_eta']
+
+        
+        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(orderPatchData), post_content_type='json')
+
+        if isinstance(orderPatch, HttpResponse):
+            return orderPatch
+        
+
+        return redirect(request.META.get('HTTP_REFERER'))
+
+class DeletePurchaseOrder(LoginRequiredMixin, View):
+
+    def post(self, request):
+        print(request.POST['d_url'])
+        orderDelete= api_delete(request=request,url=request.POST['d_url'])
+        if isinstance(orderDelete, HttpResponse):
+            return orderDelete
+
+        return redirect(to= reverse_lazy('frontend:purchasingCreate'))

@@ -42,11 +42,11 @@ def api_get(url, request, render = None, post_content_type:str =None):
                                         <h2>{e.response.text}</h2>
                                         """)
 
-def api_post(url, request, data, render = None, post_content_type:str =None):
+def api_post(url, request, files= None, data= None, render = None, post_content_type:str =None):
 
 
     try:
-        apiPost = requests.post(url=url, headers=api_auth(user=request.user, asHeader=True, content_type=post_content_type), data= data)
+        apiPost = requests.post(url=url, headers=api_auth(user=request.user, asHeader=True, content_type=post_content_type), data= data, files=files)
         apiPost.raise_for_status()
         
         if render is not None:
@@ -75,5 +75,18 @@ def api_patch(url, request, data, render = None, post_content_type:str =None):
         return HttpResponse(content=f"""<h1>Something went wrong</h1>
                                         <h1>URL: {url}</h1>
                                         <h2>CODE: {apiPatch.status_code}  {apiPatch.reason}</h2>
+                                        <h2>{e.response.text}</h2>
+                                        """)
+
+
+def api_delete(request, url):
+
+    try:
+        apiDelete = requests.delete(url=url, headers=api_auth(user=request.user, asHeader=True))
+    
+    except requests.exceptions.HTTPError as e:
+        return HttpResponse(content=f"""<h1>Something went wrong</h1>
+                                        <h1>URL: {url}</h1>
+                                        <h2>CODE: {apiDelete.status_code}  {apiDelete.reason}</h2>
                                         <h2>{e.response.text}</h2>
                                         """)

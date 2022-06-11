@@ -15,7 +15,13 @@
 
 <div class="row">
     <div class="col-lg-6">
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
+            <input type="hidden" name="o_quantity" value="{{order.quantity}}">
+            <input type="hidden" name="o_received" value="{{order.received}}">
+            <input type="hidden" name="o_url" value="{{order.url}}">
+            <input type="hidden" name="o_part" value="{{order.part}}">
+            <input type="hidden" name="o_part_name" value="{{part.name}}">
         <div class="shadow_box d-grid gap-2 p-4">
                 <div class="display-5 ">Receiving</div>
                 <div class="row">
@@ -38,7 +44,7 @@
                                 <label for="r_received_id">Quantity Received</label>
                             </div>
                             <div class="col-sm-6">
-                                <input type="number" id="r_received_id" class="form-control" name="r_received">
+                                <input required type="number" id="r_received_id" class="form-control" name="r_received" >
                             </div>
                         </div>
             
@@ -56,7 +62,7 @@
                                 <label for="r_data_rec_id">Date Received</label>
                             </div>
                             <div class="col-sm-6">
-                                <input class="form-control" type="date" name="r_date_received" id="r_data_rec_id">
+                                <input required class="form-control" type="date" name="r_date_received" id="r_data_rec_id">
                             </div>
                         </div>
                     </div>
@@ -93,44 +99,52 @@
         </div>
     </div>
     <div class="col-lg-6">
-        <form action="" method="post">
+        <form action="{%url 'frontend:purchaseEdit'%}" method="post">
+            {%csrf_token%}
+            <input type="hidden" name="e_url" value="{{order.url}}">
 
             <div class="shadow_box d-grid gap-2 p-4">
     
                 <div class="display-5">Update Order</div>
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="received">Quantity Received</label>
+                        <label for="e_ponumber">PO Number</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="received">
+                        <input type="number" id="e_ponumber" name="e_ponumber" placeholder="{{order.poNumber}}">
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="received">Quantity Received</label>
+                        <label for="e_part">Part</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="received">
+                        <select name="e_part" id="e_part">
+                            <option value="{{part.url}}"  selected >{{part.name}}</option>
+
+                            {%for obj in partlist%}
+                            <option value='{{obj.url}}'>{{obj.name}}</option>
+                            {%endfor%}
+                        </select>
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="received">Quantity Received</label>
+                        <label for="e_quantity">Quantity Ordered</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="received">
+                        <input type="number" id="e_quantity" name="e_quantity" placeholder="{{order.quantity}}">
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="received">Quantity Received</label>
+                        <label for="e_eta">ETA</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="received">
+                        <input type="date" id="e_eta"  name="e_eta">
                     </div>
                 </div>
 
@@ -138,14 +152,18 @@
                     <div class="col-sm-2">
                         <button class="btn btn-primary btn-lg" type="submit">Update</button>
                             
+                    </form>
                     </div>
                     <div class="col-sm-2">
-                        <button class="btn btn-danger btn-lg">Delete</button>
+                        <form action="{%url 'frontend:purchaseDelete'%}" method="post">
+                            {%csrf_token%}
+                            <input type="hidden" name="d_url" value="{{order.url}}">
+                            <button class="btn btn-danger btn-lg">Delete</button>
+                        </form>
                     </div>
                 </div>
 
             </div>
-        </form>
     </div>
 </div>
 
@@ -180,6 +198,10 @@
     let block = document.getElementById("forhiding");
     let submit = document.getElementById("r_button")
     let c_button =document.getElementById("close_button");
+    let stillOnOrder = parseInt("{{order.quantity}}") -( parseInt("{{order.received}}") || 0);
+    let quantityInput = document.getElementById("r_received_id");
+    quantityInput.setAttribute('placeholder', stillOnOrder);
+    
 
     function complete_check() {
         if (complete.value == 1){
@@ -198,6 +220,8 @@
         }
         
     }
+
+    
 
 
 </script>
