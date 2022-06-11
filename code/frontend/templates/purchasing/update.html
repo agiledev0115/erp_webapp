@@ -99,27 +99,28 @@
         </div>
     </div>
     <div class="col-lg-6">
-        <form action="" method="post">
+        <form action="{%url 'frontend:purchaseEdit'%}" method="post">
             {%csrf_token%}
+            <input type="hidden" name="e_url" value="{{order.url}}">
 
             <div class="shadow_box d-grid gap-2 p-4">
     
                 <div class="display-5">Update Order</div>
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="u_ponumber">PO Number</label>
+                        <label for="e_ponumber">PO Number</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="u_ponumber" name="u_ponumber" placeholder="{{order.poNumber}}">
+                        <input type="number" id="e_ponumber" name="e_ponumber" placeholder="{{order.poNumber}}">
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="u_part">Part</label>
+                        <label for="e_part">Part</label>
                     </div>
                     <div class="col-sm-6">
-                        <select name="u_part" id="u_part">
+                        <select name="e_part" id="e_part">
                             <option value="{{part.url}}"  selected >{{part.name}}</option>
 
                             {%for obj in partlist%}
@@ -131,19 +132,19 @@
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="u_quantity">Quantity Ordered</label>
+                        <label for="e_quantity">Quantity Ordered</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="number" id="u_quantity" name="u_quantity" placeholder="{{order.quantity}}">
+                        <input type="number" id="e_quantity" name="e_quantity" placeholder="{{order.quantity}}">
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="col-sm-6 h4">
-                        <label for="u_eta">ETA</label>
+                        <label for="e_eta">ETA</label>
                     </div>
                     <div class="col-sm-6">
-                        <input type="date" id="u_eta"  name="u_eta">
+                        <input type="date" id="e_eta"  name="e_eta">
                     </div>
                 </div>
 
@@ -219,6 +220,8 @@
         }
         
     }
+
+    
 
 
 </script>

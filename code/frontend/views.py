@@ -626,10 +626,33 @@ class OpenPurchaseOrder(LoginRequiredMixin, View):
         return redirect(to= reverse_lazy('frontend:purchasingUpdate', kwargs={'pk': incomingData['redirect_pk'] }))
 
 
-class UpdatePurchaseOrder(LoginRequiredMixin, View):
+class EditPurchaseOrder(LoginRequiredMixin, View):
 
     def post(self, request):
         print(request.POST)
+        incomingData= request.POST
+
+        orderPatchUrl = incomingData['e_url']
+        orderPatchData={}
+
+        if incomingData['e_ponumber']:
+            orderPatchData['poNumber'] = int(incomingData['e_ponumber'])
+        
+        if incomingData['e_part']:
+            orderPatchData['part'] = incomingData['e_part']
+        
+        if incomingData['e_quantity']:
+            orderPatchData['quantity'] = incomingData['e_quantity']
+
+        if incomingData['e_eta']:
+            orderPatchData['eta'] = incomingData['e_eta']
+
+        
+        orderPatch = api_patch(request=request, url=orderPatchUrl, data= json.dumps(orderPatchData), post_content_type='json')
+
+        if isinstance(orderPatch, HttpResponse):
+            return orderPatch
+        
 
         return redirect(request.META.get('HTTP_REFERER'))
 
