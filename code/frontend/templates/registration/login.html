@@ -59,10 +59,20 @@
                             </div>
                             <div class="justify-content-center d-grid gap-2">
                             <button type="submit" class="btn btn-warning btn-lg me-md-1 ">Login</button>
+                            <button type="submit" class="btn btn-secondary btn-lg me-md-1 "  form="guestLogin">Click to Login as Guest</button>
                             </div>                 
 
                         </div>
                     </form>
+                    <div style="display: none;">
+                        <form method="POST" action="{%url 'login'%}" id="guestLogin">
+                            {%csrf_token%}
+                            <input type="hidden" name="next" value="{{next}}">
+                            <input type="hidden" name="username" value="guest">
+                            <input type="hidden" name="password" value="guest">
+                        </form>
+
+                    </div>
 
                 </div>
             </div>
