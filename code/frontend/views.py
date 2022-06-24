@@ -35,7 +35,7 @@ class HomePage(LoginRequiredMixin, View):
 
         dashUrl = request.build_absolute_uri(self.dashEndpoint)
         dashGet = api_get(url= dashUrl, request= request)
-        print(dashGet.status_code)
+        # print(dashGet.status_code)
 
         typeUrl = request.build_absolute_uri(self.typeEndpoint)
         typeGet = api_get(url=typeUrl, request=request)
@@ -60,7 +60,7 @@ class CurrentStock(LoginRequiredMixin, View):
 
         dashUrl = request.build_absolute_uri(self.dashEndpoint)
         dashGet = api_get(url= dashUrl, request= request)
-        print(dashGet.status_code)
+        # print(dashGet.status_code)
 
         typeUrl = request.build_absolute_uri(self.typeEndpoint)
         typeGet = api_get(url=typeUrl, request=request)
@@ -151,7 +151,7 @@ class MinimumStock(LoginRequiredMixin, View):
 
         dashUrl = request.build_absolute_uri(self.dashEndpoint)
         dashGet = api_get(url= dashUrl, request= request)
-        print(dashGet.status_code)
+        # print(dashGet.status_code)
 
         typeUrl = request.build_absolute_uri(self.typeEndpoint)
         typeGet = api_get(url=typeUrl, request=request)
@@ -172,7 +172,7 @@ class MinStockUpdate(LoginRequiredMixin, View):
         return redirect(to=reverse_lazy('frontend:minHome'))
 
     def post(self,request):
-        print(request.POST)
+        # print(request.POST)
 
         partUrl = request.build_absolute_uri(reverse_lazy('api:part-list'))
         partGet = api_get(url= partUrl, request= request)
@@ -189,7 +189,7 @@ class MinStockUpdate(LoginRequiredMixin, View):
                     'minimumStock': int(val)
                 })
 
-        print(apiPostData)
+        # print(apiPostData)
         minStockUrl = request.build_absolute_uri(reverse_lazy('api:minstock-list'))
 
         apiPost =api_post(
@@ -240,7 +240,7 @@ class Purchasing(LoginRequiredMixin, View):
     def get(self, request):
         dashUrl = request.build_absolute_uri(self.dashEndpoint)
         dashGet = api_get(url= dashUrl, request= request)
-        print(dashGet.status_code)
+        # print(dashGet.status_code)
 
         typeUrl = request.build_absolute_uri(self.typeEndpoint)
         typeGet = api_get(url=typeUrl, request=request)
@@ -307,7 +307,7 @@ class PurchasingCreate(LoginRequiredMixin,View):
             for pdict in partData:
                 if pdict['url']== dict['part']:
                     dict['partName']= pdict['name']
-            print(dict['partName'])                
+            # print(dict['partName'])                
 
         
         data={
@@ -315,7 +315,7 @@ class PurchasingCreate(LoginRequiredMixin,View):
             'orders': orderData
         }
 
-        print('!!!!!>>> Time: ', (time.time()-startTime))
+        # print('!!!!!>>> Time: ', (time.time()-startTime))
         return render(request=request, template_name= self.template_name, context=data)
     
     def post(self,request):
@@ -331,7 +331,7 @@ class PurchasingCreate(LoginRequiredMixin,View):
         
 
         for count,part in enumerate(partData):
-            print(count, part)
+            # print(count, part)
             apiPostData.append({
                 "poNumber": incomingPostData["ponumber"],
                 "quantity": quantityData[count],
@@ -398,7 +398,7 @@ class PurchaseUpdate(LoginRequiredMixin,View):
 
     def post(self,request, pk):
 
-        print(request.POST)
+        # print(request.POST)
         incomingData = request.POST
         
         # Check if any attachement is given and post to api,
@@ -410,7 +410,7 @@ class PurchaseUpdate(LoginRequiredMixin,View):
             # print(attachmentUrl)
 
             attachmentPost= api_post(request=request ,url=attachmentUrl, files={'attachedFile': request.FILES['r_attachment']})
-            print('##!!>>', type(attachmentPost.content))
+            # print('##!!>>', type(attachmentPost.content))
 
             if isinstance(attachmentPost, HttpResponse):
                 return attachmentPost
@@ -479,7 +479,7 @@ class PurchaseUpdate(LoginRequiredMixin,View):
                 return receivingPost
             
             # if received quantity is more than ordered, closes the order
-            print('$$!!>>(received, ordered)', int(incomingData['r_received']), int(incomingData['o_quantity']) )
+            # print('$$!!>>(received, ordered)', int(incomingData['r_received']), int(incomingData['o_quantity']) )
             if (int(incomingData['r_received']) > int(incomingData['o_quantity'])-int(incomingData['o_received'])) or (int(incomingData['r_received']) == int(incomingData['o_quantity'])-int(incomingData['o_received'])):
                 # print('$$!!>>(received, ordered)', int(incomingData['r_received']), int(incomingData['o_quantity']) )
                 orderPatchData.update({'status' : "http://127.0.0.1:8000/api/status/2/", 'dateDelivered': incomingData['r_date_received'],})
@@ -503,7 +503,7 @@ class ClosePurchaseOrder(LoginRequiredMixin, View):
     def post(self,request):
         
         incomingData = request.POST
-        print(incomingData)
+        # print(incomingData)
 
         orderPatchUrl = incomingData['close_url']
         orderPatchData = {
@@ -580,7 +580,7 @@ class OpenPurchaseOrder(LoginRequiredMixin, View):
 
         incomingData = request.POST
 
-        print(incomingData)
+        # print(incomingData)
 
         orderPatchUrl = incomingData['order_url']
         orderPatchData = {
@@ -629,7 +629,7 @@ class OpenPurchaseOrder(LoginRequiredMixin, View):
 class EditPurchaseOrder(LoginRequiredMixin, View):
 
     def post(self, request):
-        print(request.POST)
+        # print(request.POST)
         incomingData= request.POST
 
         orderPatchUrl = incomingData['e_url']
@@ -659,7 +659,7 @@ class EditPurchaseOrder(LoginRequiredMixin, View):
 class DeletePurchaseOrder(LoginRequiredMixin, View):
 
     def post(self, request):
-        print(request.POST['d_url'])
+        # print(request.POST['d_url'])
         orderDelete= api_delete(request=request,url=request.POST['d_url'])
         if isinstance(orderDelete, HttpResponse):
             return orderDelete
